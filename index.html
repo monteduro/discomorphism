@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spotify Disco Logo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --green: #1ed760;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 44%, rgba(30, 215, 96, 0.17), transparent 32rem),
+          radial-gradient(circle at 24% 76%, rgba(255, 255, 255, 0.11), transparent 13rem),
+          #000;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      #stage {
+        position: fixed;
+        inset: 0;
+        cursor: grab;
+      }
+
+      #stage:active {
+        cursor: grabbing;
+      }
+
+      .icon-frame {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        width: min(78vmin, 720px);
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 18%;
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.015) 24%, transparent 52%),
+          radial-gradient(circle at 68% 31%, rgba(255, 255, 255, 0.13), transparent 17rem),
+          rgba(0, 0, 0, 0.58);
+        box-shadow:
+          inset 0 0 2.4rem rgba(255, 255, 255, 0.12),
+          inset 0 0 0.35rem rgba(255, 255, 255, 0.26),
+          0 0 6rem rgba(30, 215, 96, 0.16);
+        pointer-events: none;
+      }
+
+      .icon-frame::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: inherit;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), transparent 22%, transparent 72%, rgba(255, 255, 255, 0.28));
+        opacity: 0.42;
+        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        mask-composite: exclude;
+        padding: 2px;
+      }
+
+      .spark {
+        position: fixed;
+        width: clamp(42px, 6vw, 88px);
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%);
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.92));
+        pointer-events: none;
+      }
+
+      .spark::before,
+      .spark::after {
+        content: "";
+        position: absolute;
+        inset: 48% 0;
+        height: 4%;
+        background: linear-gradient(90deg, transparent, #fff 44%, #fff 56%, transparent);
+      }
+
+      .spark::after {
+        transform: rotate(90deg);
+      }
+
+      .spark i {
+        position: absolute;
+        inset: 34%;
+        display: block;
+        border-radius: 999px;
+        background: #fff;
+        box-shadow: 0 0 28px 14px rgba(255, 255, 255, 0.32);
+      }
+
+      .spark.one {
+        left: calc(50% + min(26vmin, 235px));
+        top: calc(50% - min(18vmin, 168px));
+        animation: pulse 2.4s ease-in-out infinite;
+      }
+
+      .spark.two {
+        left: calc(50% - min(30vmin, 280px));
+        top: calc(50% + min(19vmin, 176px));
+        width: clamp(35px, 5vw, 70px);
+        animation: pulse 2.7s ease-in-out 0.45s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.62;
+          transform: translate(-50%, -50%) scale(0.88) rotate(0deg);
+        }
+
+        50% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.08) rotate(12deg);
+        }
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="icon-frame" aria-hidden="true"></div>
+    <div id="stage" aria-label="Logo Spotify in stile disco ball anni 80"></div>
+    <span class="spark one" aria-hidden="true"><i></i></span>
+    <span class="spark two" aria-hidden="true"><i></i></span>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+      const stage = document.querySelector("#stage");
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 0.1, window.innerWidth < 760 ? 11.2 : 8.45);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.18;
+      stage.appendChild(renderer.domElement);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.065;
+      controls.enablePan = false;
+      controls.minDistance = 6.8;
+      controls.maxDistance = 13.2;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.72;
+
+      scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+
+      const keyLight = new THREE.SpotLight(0xffffff, 34, 12, 0.48, 0.72, 1.05);
+      keyLight.position.set(-3.9, 3.2, 4.4);
+      scene.add(keyLight);
+
+      const rimLight = new THREE.PointLight(0x8cffb6, 24, 9);
+      rimLight.position.set(3.5, 1.6, 2.9);
+      scene.add(rimLight);
+
+      const lowLight = new THREE.PointLight(0xffffff, 10, 8);
+      lowLight.position.set(-2.4, -2.8, 3.6);
+      scene.add(lowLight);
+
+      const logo = new THREE.Group();
+      scene.add(logo);
+
+      const radius = 2.18;
+      const shell = new THREE.Mesh(
+        new THREE.SphereGeometry(radius * 0.995, 96, 64),
+        new THREE.MeshPhysicalMaterial({
+          color: 0x087334,
+          roughness: 0.31,
+          metalness: 0.22,
+          clearcoat: 0.72,
+          clearcoatRoughness: 0.16,
+          envMapIntensity: 0.8
+        })
+      );
+      logo.add(shell);
+
+      const tileMaterials = [
+        new THREE.MeshPhysicalMaterial({ color: 0x053f22, metalness: 0.46, roughness: 0.24, clearcoat: 0.88, side: THREE.DoubleSide }),
+        new THREE.MeshPhysicalMaterial({ color: 0x0d8a3d, metalness: 0.58, roughness: 0.16, clearcoat: 0.96, side: THREE.DoubleSide }),
+        new THREE.MeshPhysicalMaterial({ color: 0x20d468, metalness: 0.66, roughness: 0.1, clearcoat: 1, side: THREE.DoubleSide }),
+        new THREE.MeshPhysicalMaterial({ color: 0xa8f8c5, metalness: 0.74, roughness: 0.08, clearcoat: 1, side: THREE.DoubleSide }),
+        new THREE.MeshPhysicalMaterial({ color: 0xf5fff6, metalness: 0.78, roughness: 0.05, clearcoat: 1, side: THREE.DoubleSide })
+      ];
+
+      const sphericalPoint = (lat, lon, r) => {
+        const phi = THREE.MathUtils.degToRad(90 - lat);
+        const theta = THREE.MathUtils.degToRad(lon + 90);
+        return new THREE.Vector3(
+          r * Math.sin(phi) * Math.cos(theta),
+          r * Math.cos(phi),
+          r * Math.sin(phi) * Math.sin(theta)
+        );
+      };
+
+      const makeTile = (latA, latB, lonA, lonB, material) => {
+        const insetLat = 0.06;
+        const insetLon = 0.11;
+        const positions = [
+          sphericalPoint(latA + insetLat, lonA + insetLon, radius + 0.011),
+          sphericalPoint(latA + insetLat, lonB - insetLon, radius + 0.011),
+          sphericalPoint(latB - insetLat, lonB - insetLon, radius + 0.011),
+          sphericalPoint(latB - insetLat, lonA + insetLon, radius + 0.011)
+        ];
+        const geometry = new THREE.BufferGeometry().setFromPoints(positions);
+        geometry.setIndex([0, 1, 2, 0, 2, 3]);
+        geometry.computeVertexNormals();
+        return new THREE.Mesh(geometry, material);
+      };
+
+      for (let lat = -76; lat < 78; lat += 7) {
+        const shift = Math.round((lat + 80) / 7) % 2 ? 3.6 : 0;
+        for (let lon = -180 + shift; lon < 180 + shift; lon += 8.5) {
+          const centerLon = lon + 4.25;
+          const centerLat = lat + 3.5;
+          const highlight = (centerLon > -145 && centerLon < -70 && centerLat > -34 && centerLat < 26) ||
+            (centerLon > 24 && centerLon < 90 && centerLat > -7 && centerLat < 48) ||
+            (centerLon > 90 && centerLon < 143 && centerLat > 18 && centerLat < 63);
+          const shimmer = Math.sin(centerLon * 0.11 + centerLat * 0.33) + Math.cos(centerLon * 0.07 - centerLat * 0.18);
+          let materialIndex = shimmer > 1.05 ? 2 : shimmer < -1.15 ? 0 : 1;
+          if (highlight) materialIndex = shimmer > 0.2 ? 4 : 3;
+          const tile = makeTile(lat, lat + 6.25, lon, lon + 7.55, tileMaterials[materialIndex]);
+          logo.add(tile);
+        }
+      }
+
+      const gridMaterial = new THREE.LineBasicMaterial({
+        color: 0xcdfbdd,
+        transparent: true,
+        opacity: 0.16
+      });
+
+      for (let lat = -70; lat <= 70; lat += 7) {
+        const pts = [];
+        for (let lon = -180; lon <= 180; lon += 3) pts.push(sphericalPoint(lat, lon, radius + 0.018));
+        logo.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), gridMaterial));
+      }
+
+      for (let lon = -180; lon < 180; lon += 8.5) {
+        const pts = [];
+        for (let lat = -76; lat <= 76; lat += 3) pts.push(sphericalPoint(lat, lon, radius + 0.019));
+        logo.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), gridMaterial));
+      }
+
+      const blackMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x000000,
+        roughness: 0.38,
+        metalness: 0.08,
+        clearcoat: 0.68,
+        clearcoatRoughness: 0.18
+      });
+
+      const spotifyBands = new THREE.Group();
+      spotifyBands.position.z = 2.18;
+      logo.add(spotifyBands);
+
+      const makeRibbon = ({ start, c1, c2, end, width }) => {
+        const center = new THREE.CubicBezierCurve(
+          new THREE.Vector2(...start),
+          new THREE.Vector2(...c1),
+          new THREE.Vector2(...c2),
+          new THREE.Vector2(...end)
+        );
+        const samples = center.getPoints(74);
+        const top = [];
+        const bottom = [];
+
+        for (let i = 0; i < samples.length; i++) {
+          const prev = samples[Math.max(i - 1, 0)];
+          const next = samples[Math.min(i + 1, samples.length - 1)];
+          const tangent = next.clone().sub(prev).normalize();
+          const normal = new THREE.Vector2(-tangent.y, tangent.x).multiplyScalar(width / 2);
+          top.push(samples[i].clone().add(normal));
+          bottom.push(samples[i].clone().sub(normal));
+        }
+
+        const shape = new THREE.Shape();
+        shape.moveTo(top[0].x, top[0].y);
+        top.slice(1).forEach((point) => shape.lineTo(point.x, point.y));
+
+        const endPoint = samples[samples.length - 1];
+        const endTangent = samples[samples.length - 1].clone().sub(samples[samples.length - 2]).normalize();
+        const endNormal = new THREE.Vector2(-endTangent.y, endTangent.x);
+        for (let step = 1; step <= 14; step++) {
+          const angle = (Math.PI * step) / 14;
+          const point = endPoint.clone()
+            .add(endNormal.clone().multiplyScalar(Math.cos(angle) * width / 2))
+            .add(endTangent.clone().multiplyScalar(Math.sin(angle) * width / 2));
+          shape.lineTo(point.x, point.y);
+        }
+
+        bottom.slice().reverse().forEach((point) => shape.lineTo(point.x, point.y));
+
+        const startPoint = samples[0];
+        const startTangent = samples[1].clone().sub(samples[0]).normalize();
+        const startNormal = new THREE.Vector2(-startTangent.y, startTangent.x);
+        for (let step = 1; step <= 14; step++) {
+          const angle = Math.PI + (Math.PI * step) / 14;
+          const point = startPoint.clone()
+            .add(startNormal.clone().multiplyScalar(Math.cos(angle) * width / 2))
+            .add(startTangent.clone().multiplyScalar(Math.sin(angle) * width / 2));
+          shape.lineTo(point.x, point.y);
+        }
+        shape.closePath();
+
+        const mesh = new THREE.Mesh(
+          new THREE.ExtrudeGeometry(shape, {
+            depth: 0.16,
+            bevelEnabled: true,
+            bevelThickness: 0.035,
+            bevelSize: 0.035,
+            bevelSegments: 7,
+            curveSegments: 18
+          }),
+          blackMaterial
+        );
+        mesh.position.z = -0.08;
+        mesh.renderOrder = 5;
+        spotifyBands.add(mesh);
+        return mesh;
+      };
+
+      makeRibbon({
+        start: [-1.5, 0.75],
+        c1: [-0.55, 1.06],
+        c2: [0.58, 0.91],
+        end: [1.42, 0.45],
+        width: 0.25
+      });
+
+      makeRibbon({
+        start: [-1.28, 0.12],
+        c1: [-0.45, 0.36],
+        c2: [0.52, 0.2],
+        end: [1.22, -0.22],
+        width: 0.22
+      });
+
+      makeRibbon({
+        start: [-1.02, -0.48],
+        c1: [-0.35, -0.31],
+        c2: [0.35, -0.45],
+        end: [0.92, -0.75],
+        width: 0.19
+      });
+
+      const glowRing = new THREE.Mesh(
+        new THREE.SphereGeometry(radius * 1.012, 96, 64),
+        new THREE.MeshBasicMaterial({
+          color: 0x7cffaa,
+          transparent: true,
+          opacity: 0.08,
+          side: THREE.BackSide
+        })
+      );
+      logo.add(glowRing);
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.position.z = window.innerWidth < 760 ? 11.2 : 8.45;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      const clock = new THREE.Clock();
+
+      function animate() {
+        const elapsed = clock.getElapsedTime();
+        logo.rotation.y = Math.sin(elapsed * 0.32) * 0.04;
+        logo.rotation.x = Math.sin(elapsed * 0.24) * 0.02;
+        logo.rotation.z = Math.sin(elapsed * 0.18) * 0.018;
+        keyLight.position.x = -3.9 + Math.sin(elapsed * 0.72) * 0.9;
+        rimLight.intensity = 20 + Math.sin(elapsed * 1.15) * 6;
+        controls.update();
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
