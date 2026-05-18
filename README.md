@@ -1,21 +1,23 @@
 # Discomorphism
 
-Esperimento statico in Three.js per portare alla vita il logo celebrativo dei 20 anni di Spotify: una sfera stile disco ball anni 80, con tasselli in vetro riflettente, luci verdi di scena e il segno del logo estruso in 3D.
+A static Three.js experiment that brings Spotify's 20th anniversary celebratory logo to life: an 80s disco-ball sphere, reflective glass tiles, green stage lighting, and the Spotify mark extruded in 3D.
 
-Il progetto non usa build step: e una singola pagina HTML che carica Three.js da CDN. La palla ruota lentamente e puo essere trascinata con mouse o touch; le luci restano fisse nella scena, cosi i riflessi cambiano mentre l'oggetto gira.
+The project has no build step. It is a single HTML page that loads Three.js from a CDN. The ball rotates slowly, can be dragged with mouse or touch, and keeps the scene lights fixed so reflections shift as the object moves.
 
-## Avvio locale
+## Local Development
 
-```bash
-python3 -m http.server 4173
-```
-
-Poi apri:
+Open the static page directly in a browser:
 
 ```text
-http://localhost:4173
+index.html
 ```
 
-## Nota
+## Assets
 
-Questo e un progetto sperimentale e non ufficiale. Spotify e il relativo logo appartengono ai rispettivi proprietari.
+- `audio.mp3` is used as the optional background track.
+- `stemonte.jpg` is used as the floating footer avatar.
+- `preview.png` is the current visual preview.
+
+## Note
+
+This is an unofficial experimental project. Spotify and the Spotify logo belong to their respective owners.

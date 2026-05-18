@@ -3,7 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Spotify Disco Logo</title>
+    <title>Discomorphism</title>
+    <meta name="description" content="An interactive Three.js experiment that brings Spotify's 20th anniversary celebratory logo to life as a glass disco ball." />
+    <meta name="theme-color" content="#1ed760" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Discomorphism" />
+    <meta property="og:title" content="Discomorphism" />
+    <meta property="og:description" content="An interactive Three.js experiment that brings Spotify's 20th anniversary celebratory logo to life as a glass disco ball." />
+    <meta property="og:url" content="https://discomorphism.stemonte.io/" />
+    <meta property="og:image" content="https://discomorphism.stemonte.io/ogimage.jpg" />
+    <meta property="og:image:alt" content="A green glass disco-ball version of the Spotify logo." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Discomorphism" />
+    <meta name="twitter:description" content="An interactive Three.js experiment that brings Spotify's 20th anniversary celebratory logo to life as a glass disco ball." />
+    <meta name="twitter:image" content="https://discomorphism.stemonte.io/ogimage.jpg" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <script
+      defer
+      data-website-id="dfid_jP5x54bXbzyPtZfvqkru2"
+      data-domain="discomorphism.stemonte.io"
+      src="https://datafa.st/js/script.js">
+    </script>
     <style>
       :root {
         color-scheme: dark;
@@ -35,6 +55,155 @@
 
       #stage:active {
         cursor: grabbing;
+      }
+
+      .audio-toggle {
+        position: fixed;
+        top: max(20px, env(safe-area-inset-top));
+        right: max(20px, env(safe-area-inset-right));
+        z-index: 5;
+        display: block;
+        width: 48px;
+        height: 48px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #fff;
+        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 12px rgba(30, 215, 96, 0.2));
+        cursor: pointer;
+      }
+
+      .audio-toggle::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 0;
+        height: 0;
+        transform: translate(-40%, -50%);
+        border-top: 11px solid transparent;
+        border-bottom: 11px solid transparent;
+        border-left: 17px solid currentColor;
+      }
+
+      .audio-toggle.is-playing::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 20px;
+        height: 22px;
+        transform: translate(-50%, -50%);
+        background:
+          linear-gradient(currentColor, currentColor) left center / 6px 22px no-repeat,
+          linear-gradient(currentColor, currentColor) right center / 6px 22px no-repeat;
+      }
+
+      .audio-toggle.is-playing::before {
+        opacity: 0;
+      }
+
+      .floating-footer {
+        position: fixed;
+        left: 50%;
+        bottom: max(24px, env(safe-area-inset-bottom));
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        width: min(88vw, 640px);
+        transform: translateX(-50%);
+        color: rgba(238, 244, 240, 0.54);
+        font-size: 11px;
+        line-height: 1.35;
+        text-align: left;
+        pointer-events: none;
+      }
+
+      .footer-copy {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 9px;
+      }
+
+      .floating-footer p {
+        margin: 0;
+        text-shadow: 0 1px 18px rgba(0, 0, 0, 0.72);
+      }
+
+      .floating-footer p span {
+        display: block;
+      }
+
+      .music-credit {
+        display: block;
+        margin-top: 2px;
+        color: rgba(238, 244, 240, 0.72);
+        font-size: 9px;
+        line-height: 1.3;
+        text-shadow: 0 1px 18px rgba(0, 0, 0, 0.72);
+        pointer-events: auto;
+      }
+
+      .music-credit a {
+        color: inherit;
+        text-underline-offset: 2px;
+      }
+
+      .footer-avatar {
+        flex: 0 0 auto;
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        object-fit: cover;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.14),
+          0 10px 32px rgba(0, 0, 0, 0.4);
+        pointer-events: auto;
+      }
+
+      .x-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        min-height: 34px;
+        padding: 0 16px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, rgba(37, 238, 119, 0.95), rgba(20, 166, 75, 0.95));
+        color: #041408;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow:
+          0 8px 28px rgba(0, 0, 0, 0.26),
+          0 0 18px rgba(30, 215, 96, 0.16);
+        pointer-events: auto;
+      }
+
+      @media (max-height: 760px) {
+        .floating-footer {
+          bottom: max(14px, env(safe-area-inset-bottom));
+          gap: 10px;
+          font-size: 10px;
+        }
+
+        .music-credit {
+          font-size: 8px;
+        }
+
+        .footer-avatar {
+          width: 30px;
+          height: 30px;
+        }
+
+        .x-link {
+          min-height: 28px;
+          padding-inline: 13px;
+          font-size: 11px;
+        }
       }
 
       .icon-frame {
@@ -69,63 +238,6 @@
         padding: 2px;
       }
 
-      .spark {
-        position: fixed;
-        width: clamp(42px, 6vw, 88px);
-        aspect-ratio: 1;
-        transform: translate(-50%, -50%);
-        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.92));
-        pointer-events: none;
-      }
-
-      .spark::before,
-      .spark::after {
-        content: "";
-        position: absolute;
-        inset: 48% 0;
-        height: 4%;
-        background: linear-gradient(90deg, transparent, #fff 44%, #fff 56%, transparent);
-      }
-
-      .spark::after {
-        transform: rotate(90deg);
-      }
-
-      .spark i {
-        position: absolute;
-        inset: 34%;
-        display: block;
-        border-radius: 999px;
-        background: #fff;
-        box-shadow: 0 0 28px 14px rgba(255, 255, 255, 0.32);
-      }
-
-      .spark.one {
-        left: calc(50% + min(26vmin, 235px));
-        top: calc(50% - min(18vmin, 168px));
-        animation: pulse 2.4s ease-in-out infinite;
-      }
-
-      .spark.two {
-        left: calc(50% - min(30vmin, 280px));
-        top: calc(50% + min(19vmin, 176px));
-        width: clamp(35px, 5vw, 70px);
-        animation: pulse 2.7s ease-in-out 0.45s infinite;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 0.62;
-          transform: translate(-50%, -50%) scale(0.88) rotate(0deg);
-        }
-
-        50% {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(1.08) rotate(12deg);
-        }
-      }
-
       canvas {
         display: block;
       }
@@ -133,9 +245,21 @@
   </head>
   <body>
     <div class="icon-frame" aria-hidden="true"></div>
-    <div id="stage" aria-label="Logo Spotify in stile disco ball anni 80"></div>
-    <span class="spark one" aria-hidden="true"><i></i></span>
-    <span class="spark two" aria-hidden="true"><i></i></span>
+    <div id="stage" aria-label="Spotify logo in an 80s disco ball style"></div>
+    <audio id="ambient-audio" src="audio.mp3" preload="auto" loop playsinline></audio>
+    <button class="audio-toggle" type="button" aria-label="Play audio" aria-pressed="false"></button>
+    <footer class="floating-footer">
+      <div class="footer-copy">
+        <img class="footer-avatar" src="stemonte.jpg" alt="Stefano" />
+        <p>
+          <span>Hi, I'm stefano, I built this shit</span><span>instead of building something profitable.</span>
+          <small class="music-credit">
+            Music by <a href="https://pixabay.com/it/users/prettyjohn1-54616349/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=520385" target="_blank" rel="noreferrer">prettyjohn1</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=520385" target="_blank" rel="noreferrer">Pixabay</a>
+          </small>
+        </p>
+      </div>
+      <a class="x-link" href="https://x.com/stemonteduro" target="_blank" rel="noreferrer">Follow me on X</a>
+    </footer>
 
     <script type="importmap">
       {
@@ -149,10 +273,55 @@
       import * as THREE from "three";
       import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+      const ambientAudio = document.querySelector("#ambient-audio");
+      const audioToggle = document.querySelector(".audio-toggle");
+
+      const syncAudioButton = () => {
+        const isPlaying = !ambientAudio.paused;
+        audioToggle.classList.toggle("is-playing", isPlaying);
+        audioToggle.setAttribute("aria-pressed", String(isPlaying));
+        audioToggle.setAttribute("aria-label", isPlaying ? "Pause audio" : "Play audio");
+      };
+
+      const playAmbientAudio = async () => {
+        try {
+          await ambientAudio.play();
+        } catch {
+          syncAudioButton();
+        }
+      };
+
+      audioToggle.addEventListener("click", async (event) => {
+        event.stopPropagation();
+        if (ambientAudio.paused) {
+          await playAmbientAudio();
+        } else {
+          ambientAudio.pause();
+        }
+        syncAudioButton();
+      });
+
+      ["play", "pause", "ended"].forEach((eventName) => {
+        ambientAudio.addEventListener(eventName, syncAudioButton);
+      });
+
+      syncAudioButton();
+      playAmbientAudio();
+
       const stage = document.querySelector("#stage");
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.1, 100);
-      camera.position.set(0, 0.1, window.innerWidth < 760 ? 11.2 : 8.45);
+
+      const getInitialCameraDistance = () => {
+        const frameSize = Math.min(Math.min(window.innerWidth, window.innerHeight) * 0.78, 720);
+        const targetDiameter = frameSize * 0.92;
+        const visualDiameter = 5.45;
+        const verticalFit = (visualDiameter * window.innerHeight) / targetDiameter;
+        const fovScale = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+        return Math.max(9.8, verticalFit / fovScale);
+      };
+
+      camera.position.set(0, 0.1, getInitialCameraDistance());
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -167,8 +336,8 @@
       controls.dampingFactor = 0.065;
       controls.enablePan = false;
       controls.enableRotate = false;
-      controls.minDistance = 6.8;
-      controls.maxDistance = 13.2;
+      controls.minDistance = 6.4;
+      controls.maxDistance = 32;
       controls.autoRotate = false;
 
       scene.add(new THREE.AmbientLight(0xffffff, 0.18));
@@ -212,11 +381,17 @@
         vx: 0,
         vy: 0,
         dragging: false,
+        userControlled: false,
         lastX: 0,
         lastY: 0
       };
 
+      const stopAutoRotation = () => {
+        rotation.userControlled = true;
+      };
+
       renderer.domElement.addEventListener("pointerdown", (event) => {
+        stopAutoRotation();
         rotation.dragging = true;
         rotation.lastX = event.clientX;
         rotation.lastY = event.clientY;
@@ -247,6 +422,8 @@
 
       renderer.domElement.addEventListener("pointerup", endDrag);
       renderer.domElement.addEventListener("pointercancel", endDrag);
+      renderer.domElement.addEventListener("wheel", stopAutoRotation, { passive: true });
+      renderer.domElement.addEventListener("touchstart", stopAutoRotation, { passive: true });
 
       const radius = 2.18;
       const shell = new THREE.Mesh(
@@ -309,24 +486,6 @@
           const tile = makeTile(lat, lat + 6.25, lon, lon + 7.55, tileMaterials[materialIndex]);
           logo.add(tile);
         }
-      }
-
-      const gridMaterial = new THREE.LineBasicMaterial({
-        color: 0xf4fff8,
-        transparent: true,
-        opacity: 0.2
-      });
-
-      for (let lat = -70; lat <= 70; lat += 7) {
-        const pts = [];
-        for (let lon = -180; lon <= 180; lon += 3) pts.push(sphericalPoint(lat, lon, radius + 0.018));
-        logo.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), gridMaterial));
-      }
-
-      for (let lon = -180; lon < 180; lon += 8.5) {
-        const pts = [];
-        for (let lat = -76; lat <= 76; lat += 3) pts.push(sphericalPoint(lat, lon, radius + 0.019));
-        logo.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), gridMaterial));
       }
 
       const blackMaterial = new THREE.MeshPhysicalMaterial({
@@ -444,7 +603,7 @@
 
       window.addEventListener("resize", () => {
         camera.aspect = window.innerWidth / window.innerHeight;
-        camera.position.z = window.innerWidth < 760 ? 11.2 : 8.45;
+        camera.position.z = getInitialCameraDistance();
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
       });
@@ -454,10 +613,10 @@
       function animate() {
         const elapsed = clock.getElapsedTime();
         if (!rotation.dragging) {
-          rotation.y += 0.0035 + rotation.vy;
+          rotation.y += (rotation.userControlled ? 0 : 0.0012) + rotation.vy;
           rotation.x += rotation.vx;
-          rotation.vx *= 0.92;
-          rotation.vy *= 0.92;
+          rotation.vx *= 0.9;
+          rotation.vy *= 0.9;
           rotation.x *= 0.985;
         }
         logo.rotation.y = rotation.y + Math.sin(elapsed * 0.32) * 0.018;
