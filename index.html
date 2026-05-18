@@ -51,6 +51,7 @@
         position: fixed;
         inset: 0;
         cursor: grab;
+        touch-action: none;
       }
 
       #stage:active {
@@ -271,7 +272,6 @@
     </script>
     <script type="module">
       import * as THREE from "three";
-      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
       const ambientAudio = document.querySelector("#ambient-audio");
       const audioToggle = document.querySelector(".audio-toggle");
@@ -331,14 +331,12 @@
       renderer.toneMappingExposure = 1.18;
       stage.appendChild(renderer.domElement);
 
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.065;
-      controls.enablePan = false;
-      controls.enableRotate = false;
-      controls.minDistance = 6.4;
-      controls.maxDistance = 22;
-      controls.autoRotate = false;
+      const minCameraDistance = 6.6;
+      const maxCameraDistance = 22;
+
+      const clampCameraDistance = () => {
+        camera.position.z = THREE.MathUtils.clamp(camera.position.z, minCameraDistance, maxCameraDistance);
+      };
 
       scene.add(new THREE.AmbientLight(0xffffff, 0.18));
 
@@ -385,7 +383,9 @@
         userControlled: false,
         lastX: 0,
         lastY: 0,
-        activePointers: new Map()
+        activePointers: new Map(),
+        pinchStartDistance: 0,
+        pinchStartCameraZ: camera.position.z
       };
 
       const stopAutoRotation = () => {
@@ -400,6 +400,8 @@
           rotation.pinching = true;
           rotation.vx = 0;
           rotation.vy = 0;
+          rotation.pinchStartDistance = getPointerDistance();
+          rotation.pinchStartCameraZ = camera.position.z;
           return;
         }
         rotation.dragging = true;
@@ -417,7 +419,11 @@
         if (rotation.activePointers.has(event.pointerId)) {
           rotation.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
         }
-        if (rotation.pinching || rotation.activePointers.size > 1 || !rotation.dragging) return;
+        if (rotation.pinching || rotation.activePointers.size > 1) {
+          updatePinchZoom();
+          return;
+        }
+        if (!rotation.dragging) return;
         const dx = event.clientX - rotation.lastX;
         const dy = event.clientY - rotation.lastY;
         rotation.lastX = event.clientX;
@@ -439,6 +445,7 @@
           const remainingPointer = [...rotation.activePointers.values()][0];
           rotation.lastX = remainingPointer.x;
           rotation.lastY = remainingPointer.y;
+          rotation.pinching = false;
         }
         if (renderer.domElement.hasPointerCapture(event.pointerId)) {
           renderer.domElement.releasePointerCapture(event.pointerId);
@@ -447,8 +454,26 @@
 
       renderer.domElement.addEventListener("pointerup", endDrag);
       renderer.domElement.addEventListener("pointercancel", endDrag);
-      renderer.domElement.addEventListener("wheel", stopAutoRotation, { passive: true });
+      renderer.domElement.addEventListener("wheel", (event) => {
+        event.preventDefault();
+        stopAutoRotation();
+        camera.position.z += event.deltaY * 0.01;
+        clampCameraDistance();
+      }, { passive: false });
       renderer.domElement.addEventListener("touchstart", stopAutoRotation, { passive: true });
+
+      function getPointerDistance() {
+        const points = [...rotation.activePointers.values()];
+        if (points.length < 2) return 0;
+        return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+      }
+
+      function updatePinchZoom() {
+        const distance = getPointerDistance();
+        if (!distance || !rotation.pinchStartDistance) return;
+        camera.position.z = rotation.pinchStartCameraZ * (rotation.pinchStartDistance / distance);
+        clampCameraDistance();
+      }
 
       const radius = 2.18;
       const shell = new THREE.Mesh(
@@ -653,7 +678,6 @@
         lowLight.intensity = 24 + Math.cos(elapsed * 0.95) * 5;
         backHalo.intensity = 49 + Math.sin(elapsed * 0.82) * 8;
         backLeft.intensity = 22 + Math.cos(elapsed * 0.68) * 5;
-        controls.update();
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
       }
