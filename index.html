@@ -21,7 +21,7 @@
         margin: 0;
         overflow: hidden;
         background:
-          radial-gradient(circle at 50% 44%, rgba(30, 215, 96, 0.17), transparent 32rem),
+          radial-gradient(circle at 50% 44%, rgba(30, 215, 96, 0.24), transparent 32rem),
           radial-gradient(circle at 24% 76%, rgba(255, 255, 255, 0.11), transparent 13rem),
           #000;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -166,48 +166,108 @@
       controls.enableDamping = true;
       controls.dampingFactor = 0.065;
       controls.enablePan = false;
+      controls.enableRotate = false;
       controls.minDistance = 6.8;
       controls.maxDistance = 13.2;
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.72;
+      controls.autoRotate = false;
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+      scene.add(new THREE.AmbientLight(0xffffff, 0.18));
 
-      const keyLight = new THREE.SpotLight(0xffffff, 34, 12, 0.48, 0.72, 1.05);
+      const keyLight = new THREE.SpotLight(0x22ff78, 58, 14, 0.48, 0.72, 1.05);
       keyLight.position.set(-3.9, 3.2, 4.4);
       scene.add(keyLight);
 
-      const rimLight = new THREE.PointLight(0x8cffb6, 24, 9);
+      const rimLight = new THREE.PointLight(0x00ff84, 42, 10);
       rimLight.position.set(3.5, 1.6, 2.9);
       scene.add(rimLight);
 
-      const lowLight = new THREE.PointLight(0xffffff, 10, 8);
+      const lowLight = new THREE.PointLight(0x1ed760, 26, 8);
       lowLight.position.set(-2.4, -2.8, 3.6);
       scene.add(lowLight);
 
+      const whiteGlint = new THREE.PointLight(0xffffff, 8, 7);
+      whiteGlint.position.set(-1.9, 1.2, 3.8);
+      scene.add(whiteGlint);
+
+      const backHalo = new THREE.PointLight(0x16ff7a, 54, 9);
+      backHalo.position.set(0, 0.2, -3.4);
+      scene.add(backHalo);
+
+      const backLeft = new THREE.SpotLight(0x8dffc0, 24, 10, 0.55, 0.76, 1.2);
+      backLeft.position.set(-2.8, 1.9, -3.2);
+      backLeft.target.position.set(0, 0, 0);
+      scene.add(backLeft, backLeft.target);
+
+      const backRight = new THREE.SpotLight(0xffffff, 12, 9, 0.42, 0.82, 1.2);
+      backRight.position.set(2.4, -1.7, -3.1);
+      backRight.target.position.set(0.25, -0.1, 0);
+      scene.add(backRight, backRight.target);
+
       const logo = new THREE.Group();
       scene.add(logo);
+
+      const rotation = {
+        x: -0.02,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        dragging: false,
+        lastX: 0,
+        lastY: 0
+      };
+
+      renderer.domElement.addEventListener("pointerdown", (event) => {
+        rotation.dragging = true;
+        rotation.lastX = event.clientX;
+        rotation.lastY = event.clientY;
+        rotation.vx = 0;
+        rotation.vy = 0;
+        renderer.domElement.setPointerCapture(event.pointerId);
+      });
+
+      renderer.domElement.addEventListener("pointermove", (event) => {
+        if (!rotation.dragging) return;
+        const dx = event.clientX - rotation.lastX;
+        const dy = event.clientY - rotation.lastY;
+        rotation.lastX = event.clientX;
+        rotation.lastY = event.clientY;
+        rotation.y += dx * 0.008;
+        rotation.x += dy * 0.006;
+        rotation.x = THREE.MathUtils.clamp(rotation.x, -0.9, 0.9);
+        rotation.vy = dx * 0.0009;
+        rotation.vx = dy * 0.0007;
+      });
+
+      const endDrag = (event) => {
+        rotation.dragging = false;
+        if (renderer.domElement.hasPointerCapture(event.pointerId)) {
+          renderer.domElement.releasePointerCapture(event.pointerId);
+        }
+      };
+
+      renderer.domElement.addEventListener("pointerup", endDrag);
+      renderer.domElement.addEventListener("pointercancel", endDrag);
 
       const radius = 2.18;
       const shell = new THREE.Mesh(
         new THREE.SphereGeometry(radius * 0.995, 96, 64),
         new THREE.MeshPhysicalMaterial({
-          color: 0x087334,
-          roughness: 0.31,
-          metalness: 0.22,
-          clearcoat: 0.72,
-          clearcoatRoughness: 0.16,
-          envMapIntensity: 0.8
+          color: 0x050807,
+          roughness: 0.38,
+          metalness: 0.08,
+          clearcoat: 0.9,
+          clearcoatRoughness: 0.1,
+          envMapIntensity: 1
         })
       );
       logo.add(shell);
 
       const tileMaterials = [
-        new THREE.MeshPhysicalMaterial({ color: 0x053f22, metalness: 0.46, roughness: 0.24, clearcoat: 0.88, side: THREE.DoubleSide }),
-        new THREE.MeshPhysicalMaterial({ color: 0x0d8a3d, metalness: 0.58, roughness: 0.16, clearcoat: 0.96, side: THREE.DoubleSide }),
-        new THREE.MeshPhysicalMaterial({ color: 0x20d468, metalness: 0.66, roughness: 0.1, clearcoat: 1, side: THREE.DoubleSide }),
-        new THREE.MeshPhysicalMaterial({ color: 0xa8f8c5, metalness: 0.74, roughness: 0.08, clearcoat: 1, side: THREE.DoubleSide }),
-        new THREE.MeshPhysicalMaterial({ color: 0xf5fff6, metalness: 0.78, roughness: 0.05, clearcoat: 1, side: THREE.DoubleSide })
+        new THREE.MeshPhysicalMaterial({ color: 0xd7dedb, metalness: 0.16, roughness: 0.02, transmission: 0.78, thickness: 0.42, ior: 1.58, clearcoat: 1, clearcoatRoughness: 0.02, transparent: true, opacity: 0.52, side: THREE.DoubleSide }),
+        new THREE.MeshPhysicalMaterial({ color: 0xf5fff9, metalness: 0.08, roughness: 0.015, transmission: 0.86, thickness: 0.5, ior: 1.62, clearcoat: 1, clearcoatRoughness: 0.015, transparent: true, opacity: 0.6, side: THREE.DoubleSide }),
+        new THREE.MeshPhysicalMaterial({ color: 0xaeb8b3, metalness: 0.24, roughness: 0.025, transmission: 0.68, thickness: 0.35, ior: 1.55, clearcoat: 1, clearcoatRoughness: 0.025, transparent: true, opacity: 0.46, side: THREE.DoubleSide }),
+        new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0.04, roughness: 0.008, transmission: 0.92, thickness: 0.56, ior: 1.66, clearcoat: 1, clearcoatRoughness: 0.01, transparent: true, opacity: 0.72, side: THREE.DoubleSide }),
+        new THREE.MeshPhysicalMaterial({ color: 0x303735, metalness: 0.32, roughness: 0.035, transmission: 0.42, thickness: 0.28, ior: 1.5, clearcoat: 1, clearcoatRoughness: 0.03, transparent: true, opacity: 0.5, side: THREE.DoubleSide })
       ];
 
       const sphericalPoint = (lat, lon, r) => {
@@ -252,9 +312,9 @@
       }
 
       const gridMaterial = new THREE.LineBasicMaterial({
-        color: 0xcdfbdd,
+        color: 0xf4fff8,
         transparent: true,
-        opacity: 0.16
+        opacity: 0.2
       });
 
       for (let lat = -70; lat <= 70; lat += 7) {
@@ -374,9 +434,9 @@
       const glowRing = new THREE.Mesh(
         new THREE.SphereGeometry(radius * 1.012, 96, 64),
         new THREE.MeshBasicMaterial({
-          color: 0x7cffaa,
+          color: 0x1ed760,
           transparent: true,
-          opacity: 0.08,
+          opacity: 0.11,
           side: THREE.BackSide
         })
       );
@@ -393,11 +453,21 @@
 
       function animate() {
         const elapsed = clock.getElapsedTime();
-        logo.rotation.y = Math.sin(elapsed * 0.32) * 0.04;
-        logo.rotation.x = Math.sin(elapsed * 0.24) * 0.02;
+        if (!rotation.dragging) {
+          rotation.y += 0.0035 + rotation.vy;
+          rotation.x += rotation.vx;
+          rotation.vx *= 0.92;
+          rotation.vy *= 0.92;
+          rotation.x *= 0.985;
+        }
+        logo.rotation.y = rotation.y + Math.sin(elapsed * 0.32) * 0.018;
+        logo.rotation.x = rotation.x + Math.sin(elapsed * 0.24) * 0.012;
         logo.rotation.z = Math.sin(elapsed * 0.18) * 0.018;
         keyLight.position.x = -3.9 + Math.sin(elapsed * 0.72) * 0.9;
-        rimLight.intensity = 20 + Math.sin(elapsed * 1.15) * 6;
+        rimLight.intensity = 38 + Math.sin(elapsed * 1.15) * 9;
+        lowLight.intensity = 24 + Math.cos(elapsed * 0.95) * 5;
+        backHalo.intensity = 49 + Math.sin(elapsed * 0.82) * 8;
+        backLeft.intensity = 22 + Math.cos(elapsed * 0.68) * 5;
         controls.update();
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
